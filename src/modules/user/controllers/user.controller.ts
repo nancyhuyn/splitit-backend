@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
@@ -12,6 +14,8 @@ import { CreateUserDto } from 'src/modules/user/dtos/CreateUser.dto';
 import { UserService } from 'src/modules/user/services/user.service';
 import { UserEntity } from '../entities/user.entity';
 import { UpdateUserDto } from '../dtos/UpdateUser.dto';
+import { ContactEntity } from 'src/modules/contact/entities/contact.entity';
+import { TransactionEntity } from 'src/modules/transaction/entities/transaction.entity';
 
 @Controller('users')
 export class UsersController {
@@ -21,7 +25,14 @@ export class UsersController {
   createUser(
     @Body('user_details') userDetails: CreateUserDto,
   ): Promise<UserEntity> {
-    return this.userService.createUser(userDetails);
+    return this.userService.createUser(userDetails).catch((err) => {
+      throw new HttpException(
+        {
+          message: err.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    });
   }
 
   @Get()
@@ -29,24 +40,27 @@ export class UsersController {
     return this.userService.getUsers();
   }
 
-  @Put(':uuid')
-  async updateUserbyId(
-    @Body() userDetails: UpdateUserDto,
-    @Param('uuid', ParseUUIDPipe) id: string,
-  ) {
-    await this.userService.updateUser(id, userDetails);
+  @Put()
+  updateUser(@Body() userDetails: UpdateUserDto): Promise<UserEntity> {
+    return this.userService.updateUser(userDetails);
   }
 
-  @Put(':uuid')
-  async updateUserbyUuid(
-    @Body() userDetails: UpdateUserDto,
-    @Param('uuid', ParseUUIDPipe) id: string,
-  ) {
-    await this.userService.updateUser(id, userDetails);
+  @Delete()
+  deleteUserByUuid(@Body('id') id: string) {
+    return this.userService.deleteUser(id);
   }
 
-  @Delete(':uuid')
-  async deleteUserByUuid(@Param('uuid', ParseUUIDPipe) id: string) {
-    await this.userService.deleteUser(id);
+  @Get(':uuid/contacts')
+  async getUserContacts(
+    @Param('uuid', ParseUUIDPipe) id: string,
+  ): Promise<ContactEntity[]> {
+    return (await this.userService.getUserContacts(id)).contacts;
+  }
+
+  @Get(':uuid/transactions')
+  async getUserTransactions(
+    @Param('uuid', ParseUUIDPipe) id: string,
+  ): Promise<TransactionEntity[]> {
+    return (await this.userService.getUserTransactions(id)).transactions;
   }
 }

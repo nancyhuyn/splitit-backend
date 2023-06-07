@@ -9,9 +9,6 @@ export class TransactionEntity extends BaseEntity {
   @Column('varchar', { nullable: true })
   description: string;
 
-  @Column({ name: 'user_id', nullable: false })
-  userId: string;
-
   @ManyToOne(() => UserEntity, (user) => user.transactions)
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
