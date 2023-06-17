@@ -5,6 +5,7 @@ import { PaymentEntity } from '../entities/payment.entity';
 import { TransactionEntity } from 'src/modules/transaction/entities/transaction.entity';
 import { CreatePaymentDto } from '../dtos/CreatePayment.dto';
 import { ContactEntity } from 'src/modules/contact/entities/contact.entity';
+import { UpdatePaymentDto } from '../dtos/UpdatePayment.dto';
 
 @Injectable()
 export class PaymentService {
@@ -14,13 +15,15 @@ export class PaymentService {
     @InjectRepository(TransactionEntity)
     private transactionRepository: Repository<TransactionEntity>,
     @InjectRepository(ContactEntity)
-    private contactRepository: Repository<TransactionEntity>,
+    private contactRepository: Repository<ContactEntity>,
   ) {}
 
-  async createTransactionPayment(paymentDetails: CreatePaymentDto) {
-    const transactionId = paymentDetails.transactionId;
+  async create(
+    id: string,
+    paymentDetails: CreatePaymentDto,
+  ): Promise<PaymentEntity> {
     const transaction = await this.transactionRepository.findOneBy({
-      id: transactionId,
+      id,
     });
     if (!transaction) {
       throw new HttpException(
@@ -38,41 +41,32 @@ export class PaymentService {
       );
     }
 
-    console.log({
-      ...paymentDetails,
-      transaction,
-      contact,
-    });
-
     const newPayment = this.paymentRepository.create({
       ...paymentDetails,
       transaction,
       contact,
     });
 
-    //const newPayment = new PaymentEntity();
-
-    return this.contactRepository.save(newPayment);
+    return this.paymentRepository.save(newPayment);
   }
 
-  // getContact(id: string): Promise<ContactEntity> {
-  //   return this.contactRepository.findOneBy({ id });
-  // }
+  get(id: string): Promise<PaymentEntity> {
+    return this.paymentRepository.findOneBy({ id });
+  }
 
-  // async updateContact(
-  //   contactDetails: UpdateContactDto,
-  // ): Promise<ContactEntity> {
-  //   const id = contactDetails.id;
-  //   // Find user that this contact will belong to
-  //   const user = await this.contactRepository.findOneBy({ id });
-  //   if (!user) {
-  //     throw new HttpException('contact not found.', HttpStatus.BAD_REQUEST);
-  //   }
+  async update(
+    id: string,
+    paymentDetails: UpdatePaymentDto,
+  ): Promise<PaymentEntity> {
+    const payment = await this.paymentRepository.findOneBy({ id });
+    if (!payment) {
+      throw new HttpException('payment not found.', HttpStatus.BAD_REQUEST);
+    }
 
-  //   return this.contactRepository.save({ ...user, ...contactDetails });
-  // }
+    return this.paymentRepository.save({ ...payment, ...paymentDetails });
+  }
 
-  // deleteContact(id: string) {
-  //   return this.contactRepository.delete(id);
-  // }
+  delete(id: string) {
+    return this.paymentRepository.delete(id);
+  }
 }

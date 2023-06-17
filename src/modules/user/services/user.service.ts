@@ -12,19 +12,20 @@ export class UserService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  createUser(userDetails: CreateUserDto): Promise<UserEntity> {
+  create(userDetails: CreateUserDto): Promise<UserEntity> {
     const newUser = this.userRepository.create(userDetails);
     return this.userRepository.save(newUser);
   }
 
-  getUsers(): Promise<UserEntity[]> {
+  getAll(): Promise<UserEntity[]> {
     return this.userRepository.find();
   }
 
-  // Todo: add return type
-  async updateUser(userDetails: UpdateUserDto) {
-    const id = userDetails.id;
-    // Find user that this contact will belong to
+  get(id: string): Promise<UserEntity> {
+    return this.userRepository.findOneBy({ id });
+  }
+
+  async update(id, userDetails: UpdateUserDto): Promise<UserEntity> {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw new HttpException('User not found.', HttpStatus.BAD_REQUEST);
@@ -33,7 +34,7 @@ export class UserService {
     return this.userRepository.save({ ...user, ...userDetails });
   }
 
-  deleteUser(id: string) {
+  delete(id: string) {
     return this.userRepository.delete(id);
   }
 

@@ -1,39 +1,32 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseUUIDPipe,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import { LedgerEntryService } from '../services/ledgerEntry.service';
+import { LedgerEntryEntity } from '../entities/ledgerEntry.entity';
+import { UpdateLedgerEntryDto } from '../dtos/UpdateLedgerEntry.dto';
 
-@Controller('ledgerEntry')
+@Controller('ledgerentries')
 export class LedgerEntryController {
-  // constructor(private ledgerEntryService: LedgerEntryService) {}
-  // @Get(':uuid')
-  // getAllUsers(
-  //   @Param('uuid', ParseUUIDPipe) id: string,
-  // ): Promise<ContactEntity[]> {
-  //   return this.contactService.getUserContacts(id);
-  // }
-  // @Put(':uuid')
-  // async updateUserbyId(
-  //   @Body() userDetails: UpdateUserDto,
-  //   @Param('uuid', ParseUUIDPipe) id: string,
-  // ) {
-  //   await this.userService.updateUser(id, userDetails);
-  // }
-  // @Put(':uuid')
-  // async updateUserbyUuid(
-  //   @Body() userDetails: UpdateUserDto,
-  //   @Param('uuid', ParseUUIDPipe) id: string,
-  // ) {
-  //   await this.userService.updateUser(id, userDetails);
-  // }
-  // @Delete(':uuid')
-  // async deleteUserByUuid(@Param('uuid', ParseUUIDPipe) id: string) {
-  //   await this.userService.deleteUser(id);
-  // }
+  constructor(private ledgerEntryService: LedgerEntryService) {}
+
+  @Get()
+  async getLedgerEntries(): Promise<LedgerEntryEntity[]> {
+    return await this.ledgerEntryService.getAll();
+  }
+
+  @Get(':uuid')
+  async getLedgerEntry(@Param('uuid') id: string): Promise<LedgerEntryEntity> {
+    return await this.ledgerEntryService.get(id);
+  }
+
+  @Put(':uuid')
+  updateLedgerEntry(
+    @Param('uuid') id: string,
+    @Body() ledgerEntryDetails: UpdateLedgerEntryDto,
+  ): Promise<LedgerEntryEntity> {
+    return this.ledgerEntryService.update(id, ledgerEntryDetails);
+  }
+
+  @Delete(':uuid')
+  deleteLedgerEntry(@Param('uuid') id: string) {
+    return this.ledgerEntryService.delete(id);
+  }
 }

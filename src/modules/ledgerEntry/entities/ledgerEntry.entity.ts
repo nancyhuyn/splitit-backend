@@ -11,13 +11,13 @@ export class LedgerEntryEntity extends BaseEntity {
   @Column('boolean')
   fulfilled: boolean;
 
-  @ManyToOne(() => ContactEntity, (contact) => contact.debtor)
-  @JoinColumn({ name: 'debtor' })
-  debtor: TransactionEntity;
+  // Might be changed later
+  @Column('uuid')
+  debtorId: string;
 
-  @ManyToOne(() => ContactEntity, (contact) => contact.creditor)
-  @JoinColumn({ name: 'creditor' })
-  creditor: TransactionEntity;
+  // Might be changed later
+  @Column('uuid')
+  creditorId: string;
 
   @ManyToOne(
     () => TransactionEntity,

@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { ContactEntity } from '../entities/contact.entity';
 import { CreateContactDto } from '../dtos/CreateContact.dto';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
-import { CreateUserContactParams } from 'src/utils/types';
 import { UpdateContactDto } from '../dtos/UpdateContact.dto';
 
 @Injectable()
@@ -16,10 +15,10 @@ export class ContactService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async createUserContact(
+  async create(
+    id: string,
     contactDetails: CreateContactDto,
   ): Promise<ContactEntity> {
-    const id = contactDetails.userId;
     // Find user that this contact will belong to
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
@@ -36,14 +35,14 @@ export class ContactService {
     return this.contactRepository.save(newContact);
   }
 
-  getContact(id: string): Promise<ContactEntity> {
+  get(id: string): Promise<ContactEntity> {
     return this.contactRepository.findOneBy({ id });
   }
 
-  async updateContact(
+  async update(
+    id: string,
     contactDetails: UpdateContactDto,
   ): Promise<ContactEntity> {
-    const id = contactDetails.id;
     // Find user that this contact will belong to
     const user = await this.contactRepository.findOneBy({ id });
     if (!user) {
@@ -53,7 +52,14 @@ export class ContactService {
     return this.contactRepository.save({ ...user, ...contactDetails });
   }
 
-  deleteContact(id: string) {
+  delete(id: string) {
     return this.contactRepository.delete(id);
+  }
+
+  getPayments(id: string) {
+    return this.contactRepository.findOne({
+      where: { id },
+      relations: { payments: true },
+    });
   }
 }

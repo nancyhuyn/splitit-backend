@@ -19,10 +19,4 @@ export class ContactEntity extends BaseEntity {
 
   @OneToMany(() => PaymentEntity, (payment) => payment.contact)
   payments: PaymentEntity[];
-
-  @OneToMany(() => LedgerEntryEntity, (ledgerEntry) => ledgerEntry.debtor)
-  debtor: LedgerEntryEntity;
-
-  @OneToMany(() => LedgerEntryEntity, (ledgerEntry) => ledgerEntry.creditor)
-  creditor: LedgerEntryEntity;
 }

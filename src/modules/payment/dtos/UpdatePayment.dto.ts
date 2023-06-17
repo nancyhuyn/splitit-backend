@@ -1,5 +1,6 @@
 export class UpdatePaymentDto {
-  id: string;
-  name: string;
-  email: string;
+  contactId: string;
+  description: string;
+  date: Date;
+  amount: number;
 }

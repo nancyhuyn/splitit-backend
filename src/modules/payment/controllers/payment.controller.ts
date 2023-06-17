@@ -1,42 +1,28 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseUUIDPipe,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { PaymentService } from '../services/payment.service';
 import { CreatePaymentDto } from '../dtos/CreatePayment.dto';
 import { PaymentEntity } from '../entities/payment.entity';
+import { UpdatePaymentDto } from '../dtos/UpdatePayment.dto';
 
-@Controller('payment')
+@Controller('payments')
 export class PaymentController {
   constructor(private paymentService: PaymentService) {}
 
-  @Post()
-  createTransactionPayment(
-    @Body('payment_details') paymentDetails: CreatePaymentDto,
-  ) {
-    this.paymentService.createTransactionPayment(paymentDetails);
+  @Get(':uuid')
+  getPayment(@Param('uuid') id: string): Promise<PaymentEntity> {
+    return this.paymentService.get(id);
   }
 
-  // @Get()
-  // getContact(@Body('id') id: string): Promise<ContactEntity> {
-  //   return this.contactService.getContact(id);
-  // }
+  @Put(':uuid')
+  updatePayment(
+    @Param('uuid') id: string,
+    @Body() paymentDetails: UpdatePaymentDto,
+  ): Promise<PaymentEntity> {
+    return this.paymentService.update(id, paymentDetails);
+  }
 
-  // @Put()
-  // updateContact(
-  //   @Body() contactDetails: UpdateContactDto,
-  // ): Promise<ContactEntity> {
-  //   return this.contactService.updateContact(contactDetails);
-  // }
-
-  // @Delete()
-  // deleteUserByUuid(@Body('id') id: string) {
-  //   return this.contactService.deleteContact(id);
-  // }
+  @Delete(':uuid')
+  deletePayment(@Param('uuid') id: string) {
+    return this.paymentService.delete(id);
+  }
 }
