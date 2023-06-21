@@ -44,7 +44,7 @@ export class UserService {
   // }
 
   getUserContacts(id: string): Promise<UserEntity> {
-    return this.userRepository.findOne({
+    return this.userRepository.findOneOrFail({
       where: { id },
       relations: { contacts: true },
     });

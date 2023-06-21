@@ -9,14 +9,18 @@ export class ContactEntity extends BaseEntity {
   @Column('varchar')
   name: string;
 
-  @Column('varchar')
+  @Column('varchar', { unique: true })
   email: string;
 
   // This is the user that the contact belongs to
-  @ManyToOne(() => UserEntity, (user) => user.contacts)
+  @ManyToOne(() => UserEntity, (user) => user.contacts, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  @OneToMany(() => PaymentEntity, (payment) => payment.contact)
+  @OneToMany(() => PaymentEntity, (payment) => payment.contact, {
+    onDelete: 'CASCADE',
+  })
   payments: PaymentEntity[];
 }

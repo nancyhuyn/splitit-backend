@@ -11,11 +11,15 @@ export class PaymentEntity extends BaseEntity {
   @Column('float', { nullable: true })
   amount: number;
 
-  @ManyToOne(() => TransactionEntity, (transaction) => transaction.payments)
+  @ManyToOne(() => TransactionEntity, (transaction) => transaction.payments, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'transaction_id' })
   transaction: TransactionEntity;
 
-  @ManyToOne(() => ContactEntity, (contact) => contact.payments)
+  @ManyToOne(() => ContactEntity, (contact) => contact.payments, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'contact_id' })
   contact: ContactEntity;
 }

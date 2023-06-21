@@ -13,6 +13,11 @@ export class ContactController {
     return this.contactService.get(id);
   }
 
+  @Get()
+  getContacts(): Promise<ContactEntity[]> {
+    return this.contactService.getAll();
+  }
+
   @Put(':uuid')
   updateContact(
     @Param('uuid') id: string,

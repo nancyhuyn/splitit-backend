@@ -78,7 +78,21 @@ export class UsersController {
   async getContacts(
     @Param('uuid', ParseUUIDPipe) id: string,
   ): Promise<ContactEntity[]> {
-    return (await this.userService.getUserContacts(id)).contacts;
+    return this.userService
+      .getUserContacts(id)
+      .then((res) => {
+        return res.contacts;
+      })
+      .catch((err) => {
+        throw new HttpException(
+          {
+            message: err.message,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      });
+    // add error handling
+    // update .findOne() -> findOneOrFail() for all other entities
   }
 
   @Post(':uuid/transactions')

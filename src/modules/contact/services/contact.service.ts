@@ -39,6 +39,10 @@ export class ContactService {
     return this.contactRepository.findOneBy({ id });
   }
 
+  getAll(): Promise<ContactEntity[]> {
+    return this.contactRepository.find();
+  }
+
   async update(
     id: string,
     contactDetails: UpdateContactDto,

@@ -22,6 +22,9 @@ export class LedgerEntryEntity extends BaseEntity {
   @ManyToOne(
     () => TransactionEntity,
     (transaction) => transaction.ledgerEntries,
+    {
+      onDelete: 'CASCADE',
+    },
   )
   @JoinColumn({ name: 'transaction_id' })
   transaction: TransactionEntity;

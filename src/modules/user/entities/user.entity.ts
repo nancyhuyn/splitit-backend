@@ -11,9 +11,13 @@ export class UserEntity extends BaseEntity {
   @Column('varchar', { unique: true })
   email: string;
 
-  @OneToMany(() => ContactEntity, (contact) => contact.user)
+  @OneToMany(() => ContactEntity, (contact) => contact.user, {
+    onDelete: 'CASCADE',
+  })
   contacts: ContactEntity[];
 
-  @OneToMany(() => TransactionEntity, (transaction) => transaction.user)
+  @OneToMany(() => TransactionEntity, (transaction) => transaction.user, {
+    onDelete: 'CASCADE',
+  })
   transactions: TransactionEntity[];
 }

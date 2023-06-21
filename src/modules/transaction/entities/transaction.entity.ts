@@ -9,13 +9,21 @@ export class TransactionEntity extends BaseEntity {
   @Column('varchar', { nullable: true })
   description: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.transactions)
+  @ManyToOne(() => UserEntity, (user) => user.transactions, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  @OneToMany(() => PaymentEntity, (payment) => payment.transaction)
+  @OneToMany(() => PaymentEntity, (payment) => payment.transaction, {
+    onDelete: 'CASCADE',
+  })
   payments: PaymentEntity[];
 
-  @OneToMany(() => LedgerEntryEntity, (ledgerEntry) => ledgerEntry.transaction)
+  @OneToMany(
+    () => LedgerEntryEntity,
+    (ledgerEntry) => ledgerEntry.transaction,
+    { onDelete: 'CASCADE' },
+  )
   ledgerEntries: LedgerEntryEntity[];
 }
